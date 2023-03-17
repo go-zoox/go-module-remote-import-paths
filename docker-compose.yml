@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   app:
-    image: whatwewant/go-module-remote-import-paths:v0.0.2
+    image: whatwewant/go-module-remote-import-paths:v0.0.4
     platform: linux/amd64
     # build:
     #   context: .
@@ -10,5 +10,4 @@ services:
       - 0.0.0.0:8080:8080
     # command: sleep infinity
     environment:
-      SOURCE: http://10.0.0.1:8888
-      TARGET: http://gitlab.example.com
+      GIT_SERVER: http://10.0.0.1:8888
