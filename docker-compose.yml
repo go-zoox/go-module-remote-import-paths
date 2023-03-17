@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   app:
-    image: whatwewant/gomirror-hack-gitlab:v0.0.2
+    image: whatwewant/go-module-remote-import-paths:v0.0.2
     platform: linux/amd64
     # build:
     #   context: .

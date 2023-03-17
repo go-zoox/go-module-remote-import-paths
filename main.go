@@ -6,20 +6,13 @@ import (
 
 func main() {
 	app := cli.NewSingleProgram(&cli.SingleProgramConfig{
-		Name:    "gomirror-hack-gitlab",
-		Usage:   "Go mirror hack gitlab preflight => https://stackoverflow.com/questions/56938451/using-go-modules-with-private-repositories-via-http-without-ssl",
+		Name:    "go-module-remote-import-paths",
+		Usage:   "Go module remote import paths => https://stackoverflow.com/questions/56938451/using-go-modules-with-private-repositories-via-http-without-ssl",
 		Version: Version,
 		Flags: []cli.Flag{
 			&cli.StringFlag{
-				Name:     "source",
-				Aliases:  []string{"s"},
-				EnvVars:  []string{"SOURCE"},
-				Required: true,
-			},
-			&cli.StringFlag{
-				Name:     "target",
-				Aliases:  []string{"t"},
-				EnvVars:  []string{"TARGET"},
+				Name:     "git-server",
+				EnvVars:  []string{"GIT_SERVER"},
 				Required: true,
 			},
 		},
@@ -27,8 +20,7 @@ func main() {
 
 	app.Command(func(ctx *cli.Context) error {
 		return Serve(&Config{
-			Source: ctx.String("source"),
-			Target: ctx.String("target"),
+			GitServer: ctx.String("git-server"),
 		})
 	})
 

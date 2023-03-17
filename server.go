@@ -1,106 +1,35 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
-	"io/ioutil"
-	"net/http"
-	"net/url"
 	"os"
-	"strconv"
 	"strings"
 
-	"github.com/go-zoox/proxy"
-	"github.com/go-zoox/proxy/utils/rewriter"
 	"github.com/go-zoox/zoox"
 	"github.com/go-zoox/zoox/defaults"
 )
 
 type Config struct {
 	// http://10.0.0.1:8888
-	Source string `json:"source"`
-	// http://xxx.idp.example.com
-	Target string `json:"source"`
-}
-
-func (c *Config) SourceHostPort() string {
-	u, err := url.Parse(c.Source)
-	if err != nil {
-		panic("invalid source")
-	}
-
-	return u.Host
-}
-
-func (c *Config) TargetHostPort() string {
-	u, err := url.Parse(c.Target)
-	if err != nil {
-		panic("invalid target")
-	}
-
-	return u.Host
+	GitServer string `json:"git_server"`
 }
 
 func Serve(cfg *Config) error {
 	app := defaults.Application()
 
-	// app.Use(func(ctx *zoox.Context) {
-	// 	fmt.Println("ctx.Origin():", ctx.Origin())
-	// 	fmt.Println("ctx.Host():", ctx.Host())
+	app.Get("/*", func(ctx *zoox.Context) {
+		if ctx.Query().Get("go-get").String() != "1" {
+			return
+		}
 
-	// 	ctx.Next()
-	// })
+		host := ctx.Host()
+		path := strings.TrimSuffix(ctx.Path, "/")
 
-	// app.Use(middleware.Proxy(&middleware.ProxyConfig{
-	// 	Rewrites: middleware.ProxyGroupRewrites{
-	// 		{
-	// 			Name:   "gitlab",
-	// 			RegExp: "/(.*)",
-	// 			Rewrite: middleware.ProxyRewrite{
-	// 				upstream: os.Getenv("upstream"),
-	// 				Rewrites: rewriter.Rewriters{
-	// 					{
-	// 						From: "/(.*)",
-	// 						To:   "/$1",
-	// 					},
-	// 				},
-	// 			},
-	// 		},
-	// 	},
-	// }))
+		importPrefix := host + path
+		repoRoot := fmt.Sprintf("%s%s", cfg.GitServer, path)
 
-	app.Use(zoox.WrapH(proxy.NewSingleTarget(cfg.Source, &proxy.SingleTargetConfig{
-		ChangeOrigin: true,
-		Rewrites: rewriter.Rewriters{
-			{
-				From: "/(.*)",
-				To:   "/$1",
-			},
-		},
-		OnResponse: func(resp *http.Response) error {
-			goGet := resp.Request.URL.Query().Get("go-get")
-			if goGet != "1" {
-				return nil
-			}
-
-			b, err := ioutil.ReadAll(resp.Body) //Read html
-			if err != nil {
-				return err
-			}
-			err = resp.Body.Close()
-			if err != nil {
-				return err
-			}
-			bodyString := string(b)
-			bodyStringNew := strings.ReplaceAll(bodyString, cfg.SourceHostPort(), cfg.TargetHostPort())
-			body := ioutil.NopCloser(bytes.NewReader([]byte(bodyStringNew)))
-			resp.Body = body
-			resp.ContentLength = int64(len(bodyStringNew))
-			resp.Header.Set("Content-Length", strconv.Itoa(len(bodyStringNew)))
-
-			return nil
-		},
-	})))
+		ctx.HTML(200, BuildGoImport(importPrefix, repoRoot))
+	})
 
 	port := os.Getenv("PORT")
 	if port == "" {

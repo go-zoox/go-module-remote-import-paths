@@ -23,7 +23,7 @@ FROM whatwewant/go:v1.20-1
 
 LABEL MAINTAINER="Zero<tobewhatwewant@gmail.com>"
 
-LABEL org.opencontainers.image.source="https://github.com/go-zoox/gomirror-hack-gitlab"
+LABEL org.opencontainers.image.source="https://github.com/go-zoox/go-module-remote-import-paths"
 
 ARG VERSION=latest
 
