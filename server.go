@@ -12,6 +12,8 @@ import (
 type Config struct {
 	// http://10.0.0.1:8888
 	GitServer string `json:"git_server"`
+	//
+	GitServerMap map[string]string `json:"git_server_map"`
 }
 
 func Serve(cfg *Config) error {
@@ -24,9 +26,15 @@ func Serve(cfg *Config) error {
 
 		host := ctx.Host()
 		path := strings.TrimSuffix(ctx.Path, "/")
+		gitServer := cfg.GitServer
+		if cfg.GitServerMap != nil {
+			if v, ok := cfg.GitServerMap[host]; ok {
+				gitServer = v
+			}
+		}
 
 		importPrefix := host + path
-		repoRoot := fmt.Sprintf("%s%s", cfg.GitServer, path)
+		repoRoot := fmt.Sprintf("%s%s", gitServer, path)
 
 		ctx.HTML(200, BuildGoImport(importPrefix, repoRoot))
 	})

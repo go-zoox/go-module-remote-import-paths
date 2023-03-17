@@ -11,3 +11,4 @@ services:
     # command: sleep infinity
     environment:
       GIT_SERVER: http://10.0.0.1:8888
+      GIT_SERVER_MAP: '{"go_ta.zcorky.com": "http://10.0.0.1:8888"}'

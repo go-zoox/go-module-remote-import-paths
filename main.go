@@ -1,6 +1,9 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
+
 	"github.com/go-zoox/cli"
 )
 
@@ -11,16 +14,29 @@ func main() {
 		Version: Version,
 		Flags: []cli.Flag{
 			&cli.StringFlag{
-				Name:     "git-server",
-				EnvVars:  []string{"GIT_SERVER"},
-				Required: true,
+				Name:    "git-server",
+				EnvVars: []string{"GIT_SERVER"},
+			},
+			&cli.StringFlag{
+				Name:    "git-server-map",
+				EnvVars: []string{"GIT_SERVER_MAP"},
 			},
 		},
 	})
 
 	app.Command(func(ctx *cli.Context) error {
+		gitServer := ctx.String("git-server-map")
+		gitServerMap := map[string]string{}
+		if gitServer != "" {
+			err := json.Unmarshal([]byte(gitServer), &gitServerMap)
+			if err != nil {
+				return fmt.Errorf("invalid git-server-map(%s): %s", gitServer, err)
+			}
+		}
+
 		return Serve(&Config{
-			GitServer: ctx.String("git-server"),
+			GitServer:    ctx.String("git-server"),
+			GitServerMap: gitServerMap,
 		})
 	})
 
