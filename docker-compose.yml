@@ -2,11 +2,13 @@ version: '3.7'
 
 services:
   app:
-    # image: whatwewant/gzterminal:v0.0.6
-    build:
-      context: .
+    image: whatwewant/gomirror-hack-gitlab:v0.0.2
+    platform: linux/amd64
+    # build:
+    #   context: .
     ports:
-      - 0.0.0.0:6666:6666
+      - 0.0.0.0:8080:8080
     # command: sleep infinity
-    volumes:
-      - ./conf:/conf
+    environment:
+      SOURCE: http://10.0.0.1:8888
+      TARGET: http://gitlab.example.com
