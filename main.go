@@ -21,6 +21,10 @@ func main() {
 				Name:    "git-server-map",
 				EnvVars: []string{"GIT_SERVER_MAP"},
 			},
+			&cli.BoolFlag{
+				Name:    "enable-proxy",
+				EnvVars: []string{"ENABLE_PROXY"},
+			},
 		},
 	})
 
@@ -37,6 +41,7 @@ func main() {
 		return Serve(&Config{
 			GitServer:    ctx.String("git-server"),
 			GitServerMap: gitServerMap,
+			EnableProxy:  ctx.Bool("enable-proxy"),
 		})
 	})
 

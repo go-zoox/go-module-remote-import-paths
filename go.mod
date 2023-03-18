@@ -4,8 +4,10 @@ go 1.20
 
 require (
 	github.com/go-zoox/cli v1.2.0
+	github.com/go-zoox/core-utils v1.2.7
+	github.com/go-zoox/proxy v1.4.0
 	github.com/go-zoox/testify v1.0.0
-	github.com/go-zoox/zoox v1.8.14
+	github.com/go-zoox/zoox v1.8.16
 )
 
 require (
@@ -15,10 +17,10 @@ require (
 	github.com/fatih/color v1.14.1 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/go-redis/redis/v8 v8.11.5 // indirect
+	github.com/go-zoox/cache v1.0.1 // indirect
 	github.com/go-zoox/chalk v1.0.2 // indirect
 	github.com/go-zoox/compress v1.0.1 // indirect
 	github.com/go-zoox/cookie v1.0.2 // indirect
-	github.com/go-zoox/core-utils v1.2.7 // indirect
 	github.com/go-zoox/counter v1.2.0 // indirect
 	github.com/go-zoox/cron v1.1.2 // indirect
 	github.com/go-zoox/crypto v1.1.8 // indirect
@@ -34,8 +36,7 @@ require (
 	github.com/go-zoox/jobqueue v1.0.0 // indirect
 	github.com/go-zoox/jwt v1.2.0 // indirect
 	github.com/go-zoox/kv v1.5.0 // indirect
-	github.com/go-zoox/logger v1.4.0 // indirect
-	github.com/go-zoox/proxy v1.3.7 // indirect
+	github.com/go-zoox/logger v1.4.4 // indirect
 	github.com/go-zoox/random v1.0.3 // indirect
 	github.com/go-zoox/ratelimit v1.2.0 // indirect
 	github.com/go-zoox/safe v1.0.1 // indirect
