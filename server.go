@@ -19,9 +19,15 @@ type Config struct {
 	GitServerMap map[string]string `json:"git_server_map"`
 	//
 	EnableProxy bool `json:"enable_proxy"`
+	// custom domain
+	RootURL string `json:"root_url"`
 }
 
 func Serve(cfg *Config) error {
+	if cfg.EnableProxy && cfg.RootURL == "" {
+		return fmt.Errorf("RootURL is required when enable proxy")
+	}
+
 	app := defaults.Application()
 
 	routes := []proxy.MultiHostsRoute{}
@@ -61,6 +67,10 @@ func Serve(cfg *Config) error {
 		host := ctx.Host()
 		path := strings.TrimSuffix(ctx.Path, "/")
 		gitServer := cfg.GitServer
+		if cfg.EnableProxy {
+			gitServer = cfg.RootURL
+		}
+
 		if cfg.GitServerMap != nil {
 			if v, ok := cfg.GitServerMap[host]; ok {
 				gitServer = v

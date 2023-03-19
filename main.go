@@ -21,6 +21,10 @@ func main() {
 				Name:    "git-server-map",
 				EnvVars: []string{"GIT_SERVER_MAP"},
 			},
+			&cli.StringFlag{
+				Name:    "root-url",
+				EnvVars: []string{"ROOT_URL"},
+			},
 			&cli.BoolFlag{
 				Name:    "enable-proxy",
 				EnvVars: []string{"ENABLE_PROXY"},
@@ -38,7 +42,12 @@ func main() {
 			}
 		}
 
+		if ctx.Bool("enable-proxy") && ctx.String("root-url") == "" {
+			return fmt.Errorf("root-url is required when enable proxy")
+		}
+
 		return Serve(&Config{
+			RootURL:      ctx.String("root-url"),
 			GitServer:    ctx.String("git-server"),
 			GitServerMap: gitServerMap,
 			EnableProxy:  ctx.Bool("enable-proxy"),
